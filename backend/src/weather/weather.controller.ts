@@ -1,12 +1,15 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { WeatherService } from './weather.service';
+import { WeatherQueryParam } from './dto/weather-query-param.dto';
 
 @Controller('weather')
 export class WeatherController{
   constructor(private weatherService: WeatherService) {}
   @Get()
-  getWeather(): string {
-    return this.weatherService.getWeather();
+  getWeather(
+    @Query() query: WeatherQueryParam,
+  ): string {
+    return this.weatherService.getWeather(query);
   }
 
 }
