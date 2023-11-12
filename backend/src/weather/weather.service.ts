@@ -10,15 +10,19 @@ export class WeatherService {
     private readonly api: ExternalApiService,
   ) {}
   private roundCoord = (coord: string) => Number(coord).toFixed(4).toString();
-  private fixQuery = (query: WeatherQueryParam) : WeatherQueryParam => ({...query, lat: this.roundCoord(query.lat), lon: this.roundCoord(query.lon)})
+  private fixQuery = (query: WeatherQueryParam): WeatherQueryParam => ({
+    ...query,
+    lat: this.roundCoord(query.lat),
+    lon: this.roundCoord(query.lon),
+  });
   async getWeather(query: WeatherQueryParam) {
     // To ajust the coordinates to the 4 decimal places, to be equal the api precision
     query = this.fixQuery(query);
     const data = await this.db.getForecastWeather(query);
     if (data.length > 0) {
       return data;
-    } 
-    console.log("Using api");
+    }
+    console.log('Using api');
     const apiData = await this.api.getWeather(query);
     return await this.db.saveForecastWeather(apiData);
   }

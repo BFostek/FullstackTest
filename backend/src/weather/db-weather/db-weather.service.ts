@@ -18,7 +18,7 @@ export class DbWeatherService {
 
     @InjectRepository(City)
     private readonly cityRepository: Repository<City>,
-  ) { }
+  ) {}
 
   getForecastWeather(params: WeatherQueryParam): Promise<WeatherForecast[]> {
     return this.forecastRepository.find({
@@ -32,23 +32,43 @@ export class DbWeatherService {
   }
   async saveForecastWeather(data: WeatherDTO): Promise<WeatherForecast[]> {
     // check if city exists
-    let city = await this.cityRepository.findOne({ where: [{ latitude: data.city.coord.lat.toString(), longitude: data.city.coord.lon.toString() }, { name: data.city.name }] });
+    let city = await this.cityRepository.findOne({
+      where: [
+        {
+          latitude: data.city.coord.lat.toString(),
+          longitude: data.city.coord.lon.toString(),
+        },
+        { name: data.city.name },
+      ],
+    });
     if (!city) {
       city = await this.cityRepository.save(new City(data.city));
     }
     // check if forecast exists
-    const forecast = await this.forecastRepository.find({ where: { city: { name: city.name }, createdAt: MoreThanOrEqual(new Date(Date.now() - 5 * 60 * 60 * 1000)) } });
+    const forecast = await this.forecastRepository.find({
+      where: {
+        city: { name: city.name },
+        createdAt: MoreThanOrEqual(new Date(Date.now() - 5 * 60 * 60 * 1000)),
+      },
+    });
     if (forecast.length > 0) {
-      this.cityRepository.update(city.id, { latitude: data.city.coord.lat.toString(), longitude: data.city.coord.lon.toString() });
+      this.cityRepository.update(city.id, {
+        latitude: data.city.coord.lat.toString(),
+        longitude: data.city.coord.lon.toString(),
+      });
       return forecast;
     }
-    let result: WeatherForecast[] = []
+    const result: WeatherForecast[] = [];
     for (const item of data.list) {
-      let condition = await this.conditionRepository.findOne({ where: { conditionId: item.weather[0].id }, });
+      let condition = await this.conditionRepository.findOne({
+        where: { conditionId: item.weather[0].id },
+      });
       if (!condition) {
-        condition = await this.conditionRepository.save(new WeatherCondition(item.weather[0]));
+        condition = await this.conditionRepository.save(
+          new WeatherCondition(item.weather[0]),
+        );
       }
-      result.push(new WeatherForecast(item, city, condition))
+      result.push(new WeatherForecast(item, city, condition));
       this.forecastRepository.save(forecast);
     }
     // save weather forecast

@@ -1,4 +1,4 @@
-export class WeatherList{
+export class WeatherList {
   dt: number;
   main: {
     temp: number;
@@ -16,7 +16,7 @@ export class WeatherList{
       main: string;
       description: string;
       icon: string;
-    }
+    },
   ];
   clouds: {
     all: number;

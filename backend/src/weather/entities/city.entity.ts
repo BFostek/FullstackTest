@@ -16,7 +16,7 @@ export class City {
   latitude: string;
 
   @Column()
-  longitude: string
+  longitude: string;
 
   @OneToMany(() => WeatherForecast, (weatherForecast) => weatherForecast.city)
   weatherForecasts: WeatherForecast[];

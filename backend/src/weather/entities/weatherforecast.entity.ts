@@ -46,7 +46,11 @@ export class WeatherForecast {
   @ManyToOne(() => WeatherCondition, { cascade: true })
   @JoinColumn()
   weatherCondition: WeatherCondition;
-  constructor(dto: WeatherList, city: City, weatherCondition: WeatherCondition) {
+  constructor(
+    dto: WeatherList,
+    city: City,
+    weatherCondition: WeatherCondition,
+  ) {
     if (!dto) return;
     this.city = city;
     this.weatherCondition = weatherCondition;
@@ -56,6 +60,6 @@ export class WeatherForecast {
     this.minTemperature = dto.main.temp_min;
     this.maxTemperature = dto.main.temp_max;
     this.pressure = dto.main.pressure;
-    this.humidity = dto.main.humidity; 
+    this.humidity = dto.main.humidity;
   }
 }

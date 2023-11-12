@@ -17,10 +17,6 @@ import { DbWeatherService } from './db-weather/db-weather.service';
     ConfigModule,
   ],
   controllers: [WeatherController],
-  providers: [
-    WeatherService,
-    ExternalApiService,
-    DbWeatherService,
-  ],
+  providers: [WeatherService, ExternalApiService, DbWeatherService],
 })
 export class WeatherModule {}

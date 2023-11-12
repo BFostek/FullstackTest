@@ -1,4 +1,4 @@
-import { WeatherList } from "./weatherList.dto";
+import { WeatherList } from './weatherList.dto';
 
 export class WeatherDTO {
   cod: number;
@@ -21,4 +21,3 @@ export class WeatherDTO {
 }
 
 // Path: src/weather/dto/weatherListDTO.ts
- 
