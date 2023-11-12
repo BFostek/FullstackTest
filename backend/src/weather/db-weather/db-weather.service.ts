@@ -68,8 +68,9 @@ export class DbWeatherService {
           new WeatherCondition(item.weather[0]),
         );
       }
-      result.push(new WeatherForecast(item, city, condition));
-      this.forecastRepository.save(forecast);
+      let newforecast = new WeatherForecast(item, city, condition)
+      result.push(newforecast);
+      this.forecastRepository.save(newforecast);
     }
     // save weather forecast
     return result;
