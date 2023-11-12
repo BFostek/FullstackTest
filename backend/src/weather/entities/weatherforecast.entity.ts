@@ -21,16 +21,16 @@ export class WeatherForecast {
   @Column()
   timestamp: Date;
 
-  @Column()
+  @Column('decimal')
   temperature: number;
 
-  @Column()
+  @Column('decimal')
   feelsLike: number;
 
-  @Column()
+  @Column('decimal')
   minTemperature: number;
 
-  @Column()
+  @Column('decimal')
   maxTemperature: number;
 
   @Column()

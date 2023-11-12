@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { WeatherQueryParam } from '../dto/weather-query-param.dto';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
+import { WeatherDTO } from '../dto/weather.dto';
 
 @Injectable()
 export class ExternalApiService {
@@ -17,7 +18,7 @@ export class ExternalApiService {
 
     return `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${this.externalApiKey}`;
   }
-  async getWeather(cityData: WeatherQueryParam): Promise<any> {
+  async getWeather(cityData: WeatherQueryParam): Promise<WeatherDTO> {
     try {
       const { data } = await this.httpService.axiosRef.get(
         this.createUrl(cityData),

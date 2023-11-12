@@ -13,10 +13,10 @@ export class City {
   country: string;
 
   @Column()
-  latitude: number;
+  latitude: string;
 
   @Column()
-  longitude: number;
+  longitude: string
 
   @OneToMany(() => WeatherForecast, (weatherForecast) => weatherForecast.city)
   weatherForecasts: WeatherForecast[];
