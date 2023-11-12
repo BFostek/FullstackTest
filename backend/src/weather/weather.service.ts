@@ -22,9 +22,7 @@ export class WeatherService {
     if (data.length > 0) {
       return data;
     }
-    let apiData = await this.api.getWeather(query);
-
-
+    const apiData = await this.api.getWeather(query);
 
     return await this.db.saveForecastWeather(apiData);
   }

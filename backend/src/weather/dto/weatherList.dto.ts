@@ -29,4 +29,15 @@ export class WeatherList {
     pod: string;
   };
   dt_txt: string;
+  constructor(data: any){
+    if(!data){
+      return;
+    }
+    this.dt = data.dt;
+    this.main = data.main;
+    this.weather = data.weather;
+    this.clouds = data.clouds;
+    this.wind = data.wind;
+    this.sys = data.sys;
+  }
 }

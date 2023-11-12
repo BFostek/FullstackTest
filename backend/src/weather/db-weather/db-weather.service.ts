@@ -50,7 +50,6 @@ export class DbWeatherService {
         city: { name: city.name },
         createdAt: MoreThanOrEqual(new Date(Date.now() - 3 * 60 * 60 * 1000)),
       },
-
     });
     if (forecast.length > 0) {
       this.cityRepository.update(city.id, {
@@ -69,7 +68,7 @@ export class DbWeatherService {
           new WeatherCondition(item.weather[0]),
         );
       }
-      let newforecast = new WeatherForecast(item, city, condition)
+      const newforecast = new WeatherForecast(item, city, condition);
       result.push(newforecast);
       this.forecastRepository.save(newforecast);
     }

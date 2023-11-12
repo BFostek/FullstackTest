@@ -16,7 +16,6 @@ export class ExternalApiService {
   ) { }
   private createForecastUrl(cityData: WeatherQueryParam): string {
     const { lat, lon } = cityData;
-    console.log(lat, lon)
     return `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${this.externalApiKey}`;
   }
   private createCurrentWeatherUrl(cityData: WeatherQueryParam): string {
@@ -25,26 +24,13 @@ export class ExternalApiService {
   }
   async getWeather(cityData: WeatherQueryParam): Promise<WeatherDTO> {
     try {
-      const [forecast, currentWeather] = await Promise.all([this.httpService.axiosRef.get(
-        this.createForecastUrl(cityData),
-      ),
-      this.httpService.axiosRef.get(
-        this.createCurrentWeatherUrl(cityData),
-      ),
+      const [forecast, currentWeather] = await Promise.all([
+        this.httpService.axiosRef.get(this.createForecastUrl(cityData)),
+        this.httpService.axiosRef.get(this.createCurrentWeatherUrl(cityData)),
       ]);
-      let current = new WeatherList()
-      current.dt = currentWeather.data.dt
-      current.main = currentWeather.data.main
-      current.weather = currentWeather.data.weather
-      current.wind = currentWeather.data.wind
-      current.sys = currentWeather.data.sys
-      current.clouds = currentWeather.data.clouds
-
-      console.log(current)
-
-      forecast.data.list.push(current)
-      forecast.data.city.coord.lat = cityData.lat
-      forecast.data.city.coord.lon = cityData.lon
+      forecast.data.list = [new WeatherList(currentWeather.data), ...forecast.data.list];
+      forecast.data.city.coord.lat = cityData.lat;
+      forecast.data.city.coord.lon = cityData.lon;
       return forecast.data;
     } catch (error) {
       throw error;
