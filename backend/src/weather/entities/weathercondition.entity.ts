@@ -23,4 +23,11 @@ export class WeatherCondition {
     (weatherForecast) => weatherForecast.weatherCondition,
   )
   weatherForecasts: WeatherForecast[];
+  constructor(item: any) {
+    if (!item) return;
+    this.conditionId = item.id;
+    this.main = item.main;
+    this.description = item.description;
+    this.icon = item.icon;
+  }
 }

@@ -1,10 +1,10 @@
-import { weatherList } from "./weatherList.dto";
+import { WeatherList } from "./weatherList.dto";
 
 export class WeatherDTO {
   cod: number;
   message: string;
   cnt: number;
-  list: weatherList[];
+  list: WeatherList[];
   city: {
     id: number;
     name: string;

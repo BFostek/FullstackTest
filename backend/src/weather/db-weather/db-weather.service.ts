@@ -19,62 +19,39 @@ export class DbWeatherService {
     @InjectRepository(City)
     private readonly cityRepository: Repository<City>,
   ) { }
+
   getForecastWeather(params: WeatherQueryParam): Promise<WeatherForecast[]> {
     return this.forecastRepository.find({
+      relations: ['city', 'weatherCondition'],
       where: {
-        city: { latitude: params.lat, longitude: params.lon},
-        // more then 5 ours ago
+        city: { latitude: params.lat, longitude: params.lon },
         createdAt: MoreThanOrEqual(new Date(Date.now() - 5 * 60 * 60 * 1000)),
       },
       order: { timestamp: 'DESC' },
     });
   }
-  async saveForecastWeather(data: WeatherDTO): Promise<boolean> {
+  async saveForecastWeather(data: WeatherDTO): Promise<WeatherForecast[]> {
     // check if city exists
-    // TODO: REFACTOR CONSTRUCTORS
-    let city = await this.cityRepository.findOne({ where: { latitude: data.city.coord.lat.toString(), longitude: data.city.coord.lon.toString()} });
+    let city = await this.cityRepository.findOne({ where: [{ latitude: data.city.coord.lat.toString(), longitude: data.city.coord.lon.toString() }, { name: data.city.name }] });
     if (!city) {
-      const newCity = new City();
-      newCity.name = data.city.name;
-      newCity.country = data.city.country;
-      newCity.latitude = (data.city.coord.lat.toString());
-      newCity.longitude = (data.city.coord.lon.toString());
-      console.log(newCity)
-      city = await this.cityRepository.save(newCity);
+      city = await this.cityRepository.save(new City(data.city));
     }
+    // check if forecast exists
+    const forecast = await this.forecastRepository.find({ where: { city: { name: city.name }, createdAt: MoreThanOrEqual(new Date(Date.now() - 5 * 60 * 60 * 1000)) } });
+    if (forecast.length > 0) {
+      this.cityRepository.update(city.id, { latitude: data.city.coord.lat.toString(), longitude: data.city.coord.lon.toString() });
+      return forecast;
+    }
+    let result: WeatherForecast[] = []
     for (const item of data.list) {
-      // check if weather condition exists
       let condition = await this.conditionRepository.findOne({ where: { conditionId: item.weather[0].id }, });
       if (!condition) {
-        const newCondition = new WeatherCondition();
-        newCondition.conditionId = item.weather[0].id;
-        newCondition.main = item.weather[0].main;
-        newCondition.description = item.weather[0].description;
-        newCondition.icon = item.weather[0].icon;
-        try{
-        condition = await this.conditionRepository.save(newCondition);}
-        catch(err){
-          console.log(err)
-        }
+        condition = await this.conditionRepository.save(new WeatherCondition(item.weather[0]));
       }
-
-      const forecast = new WeatherForecast();
-      forecast.city = city;
-      forecast.temperature = item.main.temp;
-      forecast.pressure = item.main.pressure;
-      forecast.humidity = item.main.humidity;
-      forecast.timestamp = new Date(item.dt * 1000);
-      forecast.feelsLike = item.main.feels_like;
-      forecast.maxTemperature = item.main.temp_max;
-      forecast.minTemperature = item.main.temp_min;
-      forecast.weatherCondition = condition;
-try{
-      this.forecastRepository.save(forecast);}
-      catch(err){
-        console.log(err)
-      }
+      result.push(new WeatherForecast(item, city, condition))
+      this.forecastRepository.save(forecast);
     }
     // save weather forecast
-    return Promise.resolve(true);
+    return result;
   }
 }

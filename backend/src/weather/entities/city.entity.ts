@@ -20,4 +20,11 @@ export class City {
 
   @OneToMany(() => WeatherForecast, (weatherForecast) => weatherForecast.city)
   weatherForecasts: WeatherForecast[];
+  constructor(item: any) {
+    if (!item) return;
+    this.name = item.name;
+    this.country = item.country;
+    this.latitude = item.coord.lat.toString();
+    this.longitude = item.coord.lon.toString();
+  }
 }

@@ -1,4 +1,4 @@
-export class weatherList{
+export class WeatherList{
   dt: number;
   main: {
     temp: number;
