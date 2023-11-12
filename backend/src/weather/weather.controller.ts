@@ -8,7 +8,7 @@ export class WeatherController{
   @Get()
   getWeather(
     @Query() query: WeatherQueryParam,
-  ): string {
+  ): Promise<any> {
     return this.weatherService.getWeather(query);
   }
 
