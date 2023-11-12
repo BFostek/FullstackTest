@@ -1,5 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+} from 'typeorm';
 import { City } from './city.entity';
+import { WeatherCondition } from './weathercondition.entity';
 
 @Entity()
 export class WeatherForecast {
@@ -7,7 +15,11 @@ export class WeatherForecast {
   id: number;
 
   @Column()
-  timestamp: number;
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @Column()
+  timestamp: Date;
 
   @Column()
   temperature: number;
@@ -27,13 +39,10 @@ export class WeatherForecast {
   @Column()
   humidity: number;
 
-  @Column()
-  weatherDescription: string;
-
-  @Column()
-  weatherIcon: string;
-
   @ManyToOne(() => City, (city) => city.weatherForecasts, { cascade: true })
   @JoinColumn()
   city: City;
+  @ManyToOne(() => WeatherCondition, { cascade: true })
+  @JoinColumn()
+  weatherCondition: WeatherCondition;
 }

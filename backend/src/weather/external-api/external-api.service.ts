@@ -5,20 +5,25 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ExternalApiService {
-  readonly externalApiKey = this.configService.get<string>('OPEN_WEATHER_API_KEY');
-  constructor(private readonly httpService: HttpService, private readonly configService: ConfigService) {
-  }
+  readonly externalApiKey = this.configService.get<string>(
+    'OPEN_WEATHER_API_KEY',
+  );
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {}
   private createUrl(cityData: WeatherQueryParam): string {
     const { lat, lon } = cityData;
 
-    return `https://api.openweathermap.org/data/2.5/forecast?lat=${(lat)}&lon=${(lon)}&appid=${this.externalApiKey}`;
+    return `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${this.externalApiKey}`;
   }
   async getWeather(cityData: WeatherQueryParam): Promise<any> {
     try {
-      let { data } = await this.httpService.axiosRef.get(this.createUrl(cityData));
+      const { data } = await this.httpService.axiosRef.get(
+        this.createUrl(cityData),
+      );
       return data;
-    }
-    catch (error) {
+    } catch (error) {
       throw error;
     }
   }

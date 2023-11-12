@@ -1,6 +1,5 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { WeatherForecast } from "./weatherforecast.entity";
-
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { WeatherForecast } from './weatherforecast.entity';
 
 @Entity()
 export class City {

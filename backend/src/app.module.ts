@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { WeatherModule } from './weather/weather.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfigAsync } from './typeorm.config';
 
 @Module({
@@ -12,4 +12,4 @@ import { typeOrmConfigAsync } from './typeorm.config';
   ],
   controllers: [],
 })
-export class AppModule { }
+export class AppModule {}

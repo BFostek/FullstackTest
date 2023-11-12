@@ -1,8 +1,6 @@
-import {Module } from '@nestjs/common';
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString } from 'class-validator';
 
-
-export class WeatherQueryParam{
+export class WeatherQueryParam {
   @IsNotEmpty()
   @IsString()
   city: string;
