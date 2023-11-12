@@ -3,6 +3,7 @@ import { WeatherQueryParam } from '../dto/weather-query-param.dto';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { WeatherDTO } from '../dto/weather.dto';
+import { WeatherList } from '../dto/weatherList.dto';
 
 @Injectable()
 export class ExternalApiService {
@@ -31,6 +32,17 @@ export class ExternalApiService {
         this.createCurrentWeatherUrl(cityData),
       ),
       ]);
+      let current = new WeatherList()
+      current.dt = currentWeather.data.dt
+      current.main = currentWeather.data.main
+      current.weather = currentWeather.data.weather
+      current.wind = currentWeather.data.wind
+      current.sys = currentWeather.data.sys
+      current.clouds = currentWeather.data.clouds
+
+      console.log(current)
+
+      forecast.data.list.push(current)
       forecast.data.city.coord.lat = cityData.lat
       forecast.data.city.coord.lon = cityData.lon
       return forecast.data;

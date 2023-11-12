@@ -25,9 +25,9 @@ export class DbWeatherService {
       relations: ['city', 'weatherCondition'],
       where: {
         city: { latitude: params.lat, longitude: params.lon },
-        createdAt: MoreThanOrEqual(new Date(Date.now() - 5 * 60 * 60 * 1000)),
+        createdAt: MoreThanOrEqual(new Date(Date.now() - 3 * 60 * 60 * 1000)),
       },
-      order: { timestamp: 'DESC' },
+      order: { timestamp: 'ASC' },
     });
   }
   async saveForecastWeather(data: WeatherDTO): Promise<WeatherForecast[]> {
@@ -48,8 +48,9 @@ export class DbWeatherService {
     const forecast = await this.forecastRepository.find({
       where: {
         city: { name: city.name },
-        createdAt: MoreThanOrEqual(new Date(Date.now() - 5 * 60 * 60 * 1000)),
+        createdAt: MoreThanOrEqual(new Date(Date.now() - 3 * 60 * 60 * 1000)),
       },
+
     });
     if (forecast.length > 0) {
       this.cityRepository.update(city.id, {
