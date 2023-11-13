@@ -31,6 +31,9 @@ export class ExternalApiService {
       forecast.data.list = [new WeatherList(currentWeather.data), ...forecast.data.list];
       forecast.data.city.coord.lat = cityData.lat;
       forecast.data.city.coord.lon = cityData.lon;
+      let filteredList = forecast.data.list.splice(0,5);
+      forecast.data.list = forecast.data.list.filter((item) => item.dt_txt.includes('15:00:00'));
+      forecast.data.list = [...filteredList,...forecast.data.list ];
       return forecast.data;
     } catch (error) {
       throw error;
