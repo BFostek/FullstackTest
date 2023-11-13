@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
   const client = new MongoClient(process.env.MONGO_URI!, {})
+  await client.connect();
   const searchParams = request.nextUrl.searchParams;
   const cityName = searchParams.get("city");
   const cities = await client.db("location").collection("cities").aggregate(
@@ -43,7 +44,7 @@ export async function GET(request: NextRequest) {
         $limit: 10,
       },
     ]).toArray()
+  await client.close();
 
-  client.connect().then(() => console.log("Connected to MongoDB"));
   return Response.json(cities)
 }

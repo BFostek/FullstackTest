@@ -1,165 +1,92 @@
 "use client";
 import { Autocomplete, Box, Button, Card, CardMedia, Grid, Icon, Paper, TextField, Typography, alpha } from "@mui/material";
+import _ from "lodash";
 import CloudIcon from '@mui/icons-material/Cloud';
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Container } from "@mui/material";
 
 export default function Home() {
-  const [cities, setCities] = useState<string>("");
-  const getCitiesOne = async (str: string) => {
+  const [options, setOptions] = useState<any>([]);
+  const [value, setValue] = useState<any>("");
+
+  const getOptionsDelayed = useCallback(
+    _.debounce((text, callback) => {
+      setOptions([]);
+      if(!text) return;
+      if (text.length < 3) return;
+      getCities(text).then(callback);
+    }, 200),
+    []
+  );
+  useEffect(() => {
+    getOptionsDelayed(value, (response: any) => {
+      if (!response) return;
+      if (!response.body) return;
+      response.body.getReader().read().then((result: any) => {
+        if (!result) return;
+        if (!result.value) return;
+        let cities = JSON.parse(new TextDecoder("utf-8").decode(result?.value));
+        setOptions(cities);
+      })
+    });
+  }, [value, getOptionsDelayed]);
+
+  const getCities = async (str: string) => {
     try {
       let searchableCity = str.replace(/,/g, "");
-      console.log(searchableCity);
       let url = "/api?city=" + searchableCity;
-
-      let data = await fetch(url);
-      console.log(await data.json())
-
-      return;
+      return await fetch(url);
     } catch (error) {
       console.error(error);
     }
   };
-  const top100Films = [
-    { label: 'The Shawshank Redemption', year: 1994 },
-    { label: 'The Godfather', year: 1972 },
-    { label: 'The Godfather: Part II', year: 1974 },
-    { label: 'The Dark Knight', year: 2008 },
-    { label: '12 Angry Men', year: 1957 },
-    { label: "Schindler's List", year: 1993 },
-    { label: 'Pulp Fiction', year: 1994 },
-    {
-      label: 'The Lord of the Rings: The Return of the King',
-      year: 2003,
-    },
-    { label: 'The Good, the Bad and the Ugly', year: 1966 },
-    { label: 'Fight Club', year: 1999 },
-    {
-      label: 'The Lord of the Rings: The Fellowship of the Ring',
-      year: 2001,
-    },
-    {
-      label: 'Star Wars: Episode V - The Empire Strikes Back',
-      year: 1980,
-    },
-    { label: 'Forrest Gump', year: 1994 },
-    { label: 'Inception', year: 2010 },
-    {
-      label: 'The Lord of the Rings: The Two Towers',
-      year: 2002,
-    },
-    { label: "One Flew Over the Cuckoo's Nest", year: 1975 },
-    { label: 'Goodfellas', year: 1990 },
-    { label: 'The Matrix', year: 1999 },
-    { label: 'Seven Samurai', year: 1954 },
-    {
-      label: 'Star Wars: Episode IV - A New Hope',
-      year: 1977,
-    },
-    { label: 'City of God', year: 2002 },
-    { label: 'Se7en', year: 1995 },
-    { label: 'The Silence of the Lambs', year: 1991 },
-    { label: "It's a Wonderful Life", year: 1946 },
-    { label: 'Life Is Beautiful', year: 1997 },
-    { label: 'The Usual Suspects', year: 1995 },
-    { label: 'Léon: The Professional', year: 1994 },
-    { label: 'Spirited Away', year: 2001 },
-    { label: 'Saving Private Ryan', year: 1998 },
-    { label: 'Once Upon a Time in the West', year: 1968 },
-    { label: 'American History X', year: 1998 },
-    { label: 'Interstellar', year: 2014 },
-    { label: 'Casablanca', year: 1942 },
-    { label: 'City Lights', year: 1931 },
-    { label: 'Psycho', year: 1960 },
-    { label: 'The Green Mile', year: 1999 },
-    { label: 'The Intouchables', year: 2011 },
-    { label: 'Modern Times', year: 1936 },
-    { label: 'Raiders of the Lost Ark', year: 1981 },
-    { label: 'Rear Window', year: 1954 },
-    { label: 'The Pianist', year: 2002 },
-    { label: 'The Departed', year: 2006 },
-    { label: 'Terminator 2: Judgment Day', year: 1991 },
-    { label: 'Back to the Future', year: 1985 },
-    { label: 'Whiplash', year: 2014 },
-    { label: 'Gladiator', year: 2000 },
-    { label: 'Memento', year: 2000 },
-    { label: 'The Prestige', year: 2006 },
-    { label: 'The Lion King', year: 1994 },
-    { label: 'Apocalypse Now', year: 1979 },
-    { label: 'Alien', year: 1979 },
-    { label: 'Sunset Boulevard', year: 1950 },
-    {
-      label: 'Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb',
-      year: 1964,
-    },
-    { label: 'The Great Dictator', year: 1940 },
-    { label: 'Cinema Paradiso', year: 1988 },
-    { label: 'The Lives of Others', year: 2006 },
-    { label: 'Grave of the Fireflies', year: 1988 },
-    { label: 'Paths of Glory', year: 1957 },
-    { label: 'Django Unchained', year: 2012 },
-    { label: 'The Shining', year: 1980 },
-    { label: 'WALL·E', year: 2008 },
-    { label: 'American Beauty', year: 1999 },
-    { label: 'The Dark Knight Rises', year: 2012 },
-    { label: 'Princess Mononoke', year: 1997 },
-    { label: 'Aliens', year: 1986 },
-    { label: 'Oldboy', year: 2003 },
-    { label: 'Once Upon a Time in America', year: 1984 },
-    { label: 'Witness for the Prosecution', year: 1957 },
-    { label: 'Das Boot', year: 1981 },
-    { label: 'Citizen Kane', year: 1941 },
-    { label: 'North by Northwest', year: 1959 },
-    { label: 'Vertigo', year: 1958 },
-    {
-      label: 'Star Wars: Episode VI - Return of the Jedi',
-      year: 1983,
-    },
-    { label: 'Reservoir Dogs', year: 1992 },
-    { label: 'Braveheart', year: 1995 },
-    { label: 'M', year: 1931 },
-    { label: 'Requiem for a Dream', year: 2000 },
-    { label: 'Amélie', year: 2001 },
-    { label: 'A Clockwork Orange', year: 1971 },
-    { label: 'Like Stars on Earth', year: 2007 },
-    { label: 'Taxi Driver', year: 1976 },
-    { label: 'Lawrence of Arabia', year: 1962 },
-    { label: 'Double Indemnity', year: 1944 },
-    {
-      label: 'Eternal Sunshine of the Spotless Mind',
-      year: 2004,
-    },
-    { label: 'Amadeus', year: 1984 },
-    { label: 'To Kill a Mockingbird', year: 1962 },
-    { label: 'Toy Story 3', year: 2010 },
-    { label: 'Logan', year: 2017 },
-    { label: 'Full Metal Jacket', year: 1987 },
-    { label: 'Dangal', year: 2016 },
-    { label: 'The Sting', year: 1973 },
-    { label: '2001: A Space Odyssey', year: 1968 },
-    { label: "Singin' in the Rain", year: 1952 },
-    { label: 'Toy Story', year: 1995 },
-    { label: 'Bicycle Thieves', year: 1948 },
-    { label: 'The Kid', year: 1921 },
-    { label: 'Inglourious Basterds', year: 2009 },
-    { label: 'Snatch', year: 2000 },
-    { label: '3 Idiots', year: 2009 },
-    { label: 'Monty Python and the Holy Grail', year: 1975 },
-  ];
   return (
     <Container>
-      <Paper sx={{ minWidth:"500px", maxHeight: "100vh", marginTop: 3, borderRadius: "10px" }}>
+      <Paper sx={{
+        minWidth: "500px", marginTop: 3, borderRadius: "15px", boxShadow: 10
+      }}>
         <Grid container>
-          <Grid item xs={9} sx={{ backgroundColor: "#00658f", borderRadius: "10px 0 0 10px" }}>
+          <Grid item xs={8} sx={{ backgroundColor: "#00658f", borderRadius: "15px 0 0 15px" }}>
             <Grid container justifyContent="center" direction="row" >
               <Grid item xs={8} sx={{ paddingX: 3, marginTop: 2 }}>
                 <Autocomplete
+                  freeSolo
+                  filterOptions={(x) => x}
+                  onChange={(e: any) => setValue(e.target.innerText)}
+
+                  onInputChange={(e, value) => {
+                    setValue(value);
+                  }}
+                  loading={options.length === 0}
+                  options={options ? options.map((obj: any) => obj.fullName) : []}
                   sx={{
 
-                    bgcolor: alpha("#fbfcfe", 0.85), borderRadius: "10px"
+                    bgcolor: alpha("#fbfcfe", 0.7), borderRadius: "15px", '& .Mui-focused': {
+                      borderColor: '#fbfcfe',
+                      color: '#fbfcfe',
+                      borderWidth: 2,
+                      borderRadius: "15px"
+                    }, '& .MuiOutlinedInput-root': {
+                      '& fieldset': {
+                        borderColor: '#fbfcfe',
+                        color: '#fbfcfe',
+                        borderWidth: 0,
+                        borderRadius: "15px"
+                      },
+                      '&:hover fieldset': {
+                        borderColor: '#fbfcfe',
+                        color: '#fbfcfe',
+                        borderWidth: 2,
+                        borderRadius: "15px"
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: '#fbfcfe',
+                        color: '#fbfcfe',
+                        borderWidth: 2,
+                        borderRadius: "15px"
+                      },
+                    },
                   }}
-                  freeSolo
-                  options={top100Films.map((option) => option.label)}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -173,7 +100,7 @@ export default function Home() {
                 />
               </Grid>
             </Grid>
-            <Grid container justifyContent="center" sx={{ minHeight: "30vh", marginTop: 10 }}>
+            <Grid container justifyContent="center" sx={{ minHeight: "30vh", marginY: 5 }}>
               <Grid item >
                 <Box sx={{ display: "flex", color: "#fbfcfe", flexDirection: "column", alignItems: "center" }}>
                   <Typography variant="h3">
@@ -188,7 +115,9 @@ export default function Home() {
                 </Box>
               </Grid>
             </Grid>
-            <Grid container sx={{ bgcolor: alpha("#fbfcfe", 0.3), justifyContent: "center" }}>
+            <Grid container sx={{
+              bgcolor: alpha("#fbfcfe", 0.3), justifyContent: "center", borderRadius: "0 15px 0 15px"
+            }}>
               <Grid item sx={{ marginY: "15px" }}>
                 <Typography variant="h6" color="#fbfcfe">
                   Weather of Next Hours
@@ -269,34 +198,145 @@ export default function Home() {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={3} >
-            <Box sx={{ minHeight: "100%", minWidth: "200px" }}>
+          <Grid item xs={4} >
+            <Box sx={{ minHeight: "100%", minWidth: "200px", bgcolor: "#00658f", borderRadius: "0 15px 15px 0" }}>
               <Grid container justifyContent="center" direction="column" sx={{ padding: 2 }}>
+                <Grid item sx={{ marginY: "15px" }}>
+                  <Typography variant="h5" color="#fbfcfe">
+                    Weather of Next Days
+                  </Typography>
+                </Grid>
                 <Grid item >
-                  <Card sx={{ padding: 2,borderRadius:"20px 20px 0 0 ", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    Segunda
+                  <Card sx={{ padding: 4, background: "#fbfcfe", borderRadius: "20px 20px 0 0", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <Grid container justifyContent="center" alignItems="center">
+                      <Grid item xs={3}>
+                        <Typography variant="h6">
+                          Seg
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={2}>
+                        <Icon>
+                          <CloudIcon />
+                        </Icon>
+                      </Grid>
+                      <Grid item xs={4}>
+                        <Typography variant="h6">
+                          Cloudy
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Typography variant="h6">
+                          12:00
+                        </Typography>
+                      </Grid>
+                    </Grid>
                   </Card>
                 </Grid>
                 <Grid item >
-                  <Card sx={{ padding: 2,borderRadius:"0", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    Segunda
-                  </Card>
-                </Grid>
-                <Grid item >
-                  <Card sx={{ padding: 2, borderRadius:"0", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    Segunda
+                  <Card sx={{ padding: 4, background: "#fbfcfe", borderRadius: "0", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <Grid container justifyContent="center" alignItems="center">
+                      <Grid item xs={3}>
+                        <Typography variant="h6">
+                          Ter
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={2}>
+                        <Icon>
+                          <CloudIcon />
+                        </Icon>
+                      </Grid>
+                      <Grid item xs={4}>
+                        <Typography variant="h6">
+                          Cloudy
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Typography variant="h6">
+                          12:00
+                        </Typography>
+                      </Grid>
+                    </Grid>
                   </Card>
                 </Grid>
 
                 <Grid item >
-                  <Card sx={{ padding: 2,borderRadius:"0", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    Segunda
+                  <Card sx={{ padding: 4, background: "#fbfcfe", borderRadius: "0", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <Grid container justifyContent="center" alignItems="center">
+                      <Grid item xs={3}>
+                        <Typography variant="h6">
+                          Qua
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={2}>
+                        <Icon>
+                          <CloudIcon />
+                        </Icon>
+                      </Grid>
+                      <Grid item xs={4}>
+                        <Typography variant="h6">
+                          Cloudy
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Typography variant="h6">
+                          12:00
+                        </Typography>
+                      </Grid>
+                    </Grid>
                   </Card>
                 </Grid>
 
                 <Grid item >
-                  <Card sx={{ padding: 2, borderRadius:"0 0 20px 20px" ,display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    Segunda
+                  <Card sx={{ padding: 4, background: "#fbfcfe", borderRadius: "0", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <Grid container justifyContent="center" alignItems="center">
+                      <Grid item xs={3}>
+                        <Typography variant="h6">
+                          Qui
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={2}>
+                        <Icon>
+                          <CloudIcon />
+                        </Icon>
+                      </Grid>
+                      <Grid item xs={4}>
+                        <Typography variant="h6">
+                          Cloudy
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Typography variant="h6">
+                          12:00
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Card>
+                </Grid>
+
+                <Grid item >
+                  <Card sx={{ padding: 4, background: "#fbfcfe", borderRadius: "0 0 20px 20px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <Grid container justifyContent="center" alignItems="center">
+                      <Grid item xs={3}>
+                        <Typography variant="h6">
+                          Sex
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={2}>
+                        <Icon>
+                          <CloudIcon />
+                        </Icon>
+                      </Grid>
+                      <Grid item xs={4}>
+                        <Typography variant="h6">
+                          Cloudy
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Typography variant="h6">
+                          12:00
+                        </Typography>
+                      </Grid>
+                    </Grid>
                   </Card>
                 </Grid>
               </Grid>
