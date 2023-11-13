@@ -2,6 +2,7 @@
 import { Autocomplete, Box, Button, Card, CardMedia, Grid, Icon, Paper, TextField, Typography, alpha } from "@mui/material";
 import CloudIcon from '@mui/icons-material/Cloud';
 import { useState } from "react";
+import { Container } from "@mui/material";
 
 export default function Home() {
   const [cities, setCities] = useState<string>("");
@@ -146,7 +147,8 @@ export default function Home() {
     { label: 'Monty Python and the Holy Grail', year: 1975 },
   ];
   return (
-      <Paper sx={{  maxHeight: "100vh", marginX: 40, marginTop: 3, borderRadius: "10px" }}>
+    <Container>
+      <Paper sx={{ minWidth:"500px", maxHeight: "100vh", marginTop: 3, borderRadius: "10px" }}>
         <Grid container>
           <Grid item xs={9} sx={{ backgroundColor: "#00658f", borderRadius: "10px 0 0 10px" }}>
             <Grid container justifyContent="center" direction="row" >
@@ -271,7 +273,7 @@ export default function Home() {
             <Box sx={{ minHeight: "100%", minWidth: "200px" }}>
               <Grid container justifyContent="center" direction="column" sx={{ padding: 2 }}>
                 <Grid item >
-                  <Card sx={{ padding: 2,background:"#dbe4e8", borderRadius:"20px 20px 0 0 ", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  <Card sx={{ padding: 2,borderRadius:"20px 20px 0 0 ", display: "flex", flexDirection: "column", alignItems: "center" }}>
                     Segunda
                   </Card>
                 </Grid>
@@ -302,5 +304,6 @@ export default function Home() {
           </Grid>
         </Grid>
       </Paper >
+    </Container>
   )
 }
