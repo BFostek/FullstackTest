@@ -27,7 +27,14 @@ const iconMap = {
   '13n': "http://openweathermap.org/img/wn/13n.png",
   '50n': "http://openweathermap.org/img/wn/50n.png",
 }
-const WeatherCard = ({ time, temperature, index, len, icon }) => {
+interface WeatherCardProps {
+  time: string; // Assuming 'time' is a string, adjust the type accordingly
+  temperature: number; // Assuming 'temperature' is a number, adjust the type accordingly
+  index: number;
+  len: number;
+  icon: string;
+}
+const WeatherCard :React.FC<WeatherCardProps>= ({ time, temperature, index, len, icon }) => {
   let cardStyle = { padding: 2, borderRadius: "0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between" }
   if (index == 0) {
     cardStyle = { ...cardStyle, borderRadius: "15px 0 0 15px" }
