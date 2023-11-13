@@ -6,8 +6,10 @@ import CloudIcon from '@mui/icons-material/Cloud';
 import { alpha } from '@mui/system';
 import _, { parseInt } from 'lodash';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
-
-const iconMap = {
+interface ObjectLiteral {
+  [key: string]: any;
+}
+const iconMap : ObjectLiteral= {
   '01d': "http://openweathermap.org/img/wn/01d.png",
   '02d': "http://openweathermap.org/img/wn/02d.png",
   '03d': "http://openweathermap.org/img/wn/03d.png",
@@ -28,10 +30,15 @@ const iconMap = {
   '50n': "http://openweathermap.org/img/wn/50n.png",
 }
 interface WeatherCardProps {
-  time: string; // Assuming 'time' is a string, adjust the type accordingly
-  temperature: number; // Assuming 'temperature' is a number, adjust the type accordingly
+  time: string; 
+  temperature: number; 
   index: number;
   len: number;
+  icon: string;
+}
+interface WeatherNextDaysProps{
+  day: string; 
+  weather: string; 
   icon: string;
 }
 const WeatherCard :React.FC<WeatherCardProps>= ({ time, temperature, index, len, icon }) => {
@@ -55,7 +62,7 @@ const WeatherCard :React.FC<WeatherCardProps>= ({ time, temperature, index, len,
   );
 }
 
-const NextDaysCard = ({ day, weather, icon }) => (
+const NextDaysCard : React.FC<WeatherNextDaysProps>= ({ day, weather, icon }) => (
   <Grid item>
     <Card sx={{ padding: 4, background: "#fbfcfe", borderRadius: 0, display: "flex", flexDirection: "column", alignItems: "center" }}>
       <Grid container justifyContent="center" alignItems="center">
@@ -224,7 +231,7 @@ export default function Home() {
                 </Typography>
               </Grid>
               <Grid container sx={{ marginBottom: 2, justifyContent: "center" }}>
-                {nextHours.map((item, index, arr) => (
+                {nextHours.map((item:any, index:any, arr:any[]) => (
                   <Grid item key={index} xs={2}>
                     <WeatherCard
                       icon={item.weatherCondition.icon}
@@ -246,8 +253,8 @@ export default function Home() {
                     Weather of Next Days
                   </Typography>
                 </Grid>
-                {nextDays.map((data, index) => (
-                  <NextDaysCard index={index} day={(new Date(data.timestamp)).toLocaleString('default', {
+                {nextDays.map((data:any, index:any) => (
+                  <NextDaysCard key={index} day={(new Date(data.timestamp)).toLocaleString('default', {
                     weekday: 'short'
                   })} weather={parseInt(data.temperature) + "°C"}
                     icon={data.weatherCondition.icon}
