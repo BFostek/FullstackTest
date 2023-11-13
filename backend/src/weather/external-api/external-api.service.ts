@@ -16,11 +16,11 @@ export class ExternalApiService {
   ) { }
   private createForecastUrl(cityData: WeatherQueryParam): string {
     const { lat, lon } = cityData;
-    return `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${this.externalApiKey}`;
+    return `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${this.externalApiKey}&units=metric `;
   }
   private createCurrentWeatherUrl(cityData: WeatherQueryParam): string {
     const { lat, lon } = cityData;
-    return `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${this.externalApiKey}`;
+    return `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${this.externalApiKey}&units=metric `;
   }
   async getWeather(cityData: WeatherQueryParam): Promise<WeatherDTO> {
     try {
