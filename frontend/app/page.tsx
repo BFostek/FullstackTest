@@ -2,10 +2,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Container, Paper, Grid, Box, Typography, Card, Icon, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
-import CloudIcon from '@mui/icons-material/Cloud';
 import { alpha } from '@mui/system';
 import _, { parseInt } from 'lodash';
-import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import Image from 'next/image'
+
 interface ObjectLiteral {
   [key: string]: any;
 }
@@ -206,20 +206,29 @@ export default function Home() {
             </Grid>
             <Grid container justifyContent="center" sx={{ minHeight: "30vh", marginY: 5 }}>
               <Grid item>
-                <Box sx={{ display: "flex", color: "#fbfcfe", flexDirection: "column", alignItems: "center" }}>
-                  <Typography variant="h3">
-                    {currentWeather ?
-                      currentWeather.city.name + ", " + currentWeather.city.country
-                      :
-                      "..."}
-                  </Typography>
-                  <Typography variant="h1">
-                    {currentWeather ? parseInt(currentWeather.temperature) : "??"}°C
-                  </Typography>
-                  <Typography variant="h5">
-                    {currentWeather ? currentWeather.weatherCondition.description : "..."}
-                  </Typography>
-                </Box>
+                {currentWeather ? (
+                  <Box sx={{ display: "flex", color: "#fbfcfe", flexDirection: "column", alignItems: "center" }}>
+                    <Typography variant="h3">
+                      {currentWeather.city.name + ", " + currentWeather.city.country}
+                    </Typography>
+                    <Typography variant="h1">
+                      {parseInt(currentWeather.temperature)}°C
+                    </Typography>
+                    <Typography variant="h5">
+                      {currentWeather.weatherCondition.description}
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Box sx={{ display: "flex", color: "#fbfcfe", flexDirection: "column", alignItems: "center" }}>
+                    <Image src="/search_bot.gif" alt="Oops..." width="200" height="200" />
+                    <Typography variant="h5" sx={{ margin: "20px" }}>
+                      Oops... It seems that you have not
+                    </Typography>
+                    <Typography variant="h5" sx={{ marginTop: "20px" }}>
+                      searched for any city yet.
+                    </Typography>
+                  </Box>
+                )}
               </Grid>
             </Grid>
             <Grid container sx={{
